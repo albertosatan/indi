@@ -107,7 +107,7 @@ bool LX200NYX101::initProperties()
     GuideRateSP[0].fill("0.25","0.25", guideRate == 0 ? ISS_ON : ISS_OFF);
     GuideRateSP[1].fill("0.50","0.50", guideRate == 1 ? ISS_ON : ISS_OFF);
     GuideRateSP[2].fill("1.00","1.00", guideRate == 2 ? ISS_ON : ISS_OFF);
-    GuideRateSP.fill(getDeviceName(), "GUIDE_RATE", "Guide Rate", SETTINGS_TAB, IP_RW, ISR_1OFMANY, 60, IPS_IDLE);
+    GuideRateSP.fill(getDeviceName(), "GUIDE_RATE", "Guide Rate", SETTINGS_TAB, IP_RW, ISR_1OFMANY, 60, IPS_IDLE);  setGuideRate(guideRate); // :-) ADDED TO ASSURE CORRECT GUIDE RATE (aperez@disca.upv.es)
 
     //Go Home
     HomeSP[0].fill("Home", "Go", ISS_OFF);
@@ -195,6 +195,7 @@ bool LX200NYX101::initProperties()
 
     SlewRateS[9].s = ISS_ON;
 
+    
 
     return true;
 }
@@ -280,6 +281,8 @@ bool LX200NYX101::updateProperties()
         defineProperty(IsHomePaused);
         defineProperty(ParkFailed);
         defineProperty(SlewingHome);
+
+	defineProperty(&ParkOptionSP); // :-) (aperez@disca.upv.es)
     }
     else
     {
@@ -314,6 +317,7 @@ bool LX200NYX101::updateProperties()
         deleteProperty(ParkFailed);
         deleteProperty(SlewingHome);
 
+	deleteProperty(ParkOptionSP.name); // :-) (aperez@disca.upv.es)
     }
 
     return true;
@@ -322,7 +326,7 @@ bool LX200NYX101::updateProperties()
 
 const char *LX200NYX101::getDefaultName()
 {
-    return "Pegasus NYX-101";
+    return "Pegasus NYX-101 (arm)";
 }
 
 const char *ON = "ON";
@@ -845,6 +849,24 @@ bool LX200NYX101::SetSlewRate(int index)
     snprintf(raCommand, DRIVER_LEN, ":RA%f#", value);
 
     return sendCommand(decCommand) && sendCommand(raCommand);
+}
+
+bool LX200NYX101::SetCurrentPark() //  :-) (aperez@disca.upv.es)
+{
+  /*
+    char response[RB_MAX_LEN];
+    // 0 = failure, 1 = success
+    int error_or_fail = getCommandSingleCharResponse(PortFD, response, ":hQ#");
+    if(error_or_fail != 1 || response[0] != '1')
+    {
+        LOGF_WARN("===CMD==> Set Park Pos %s", response);
+        return false;
+    }
+    SetAxis1Park(currentRA);
+    SetAxis2Park(currentDEC);
+    LOG_WARN("Park Value set to current position");
+  */
+    return true;
 }
 
 bool LX200NYX101::setGuideRate(int rate)
