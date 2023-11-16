@@ -326,6 +326,7 @@ bool LX200NYX101::updateProperties()
 
 const char *LX200NYX101::getDefaultName()
 {
+  
     return "Pegasus NYX-101 (arm)";
 }
 
