@@ -107,7 +107,7 @@ bool LX200NYX101::initProperties()
     GuideRateSP[0].fill("0.25","0.25", guideRate == 0 ? ISS_ON : ISS_OFF);
     GuideRateSP[1].fill("0.50","0.50", guideRate == 1 ? ISS_ON : ISS_OFF);
     GuideRateSP[2].fill("1.00","1.00", guideRate == 2 ? ISS_ON : ISS_OFF);
-    GuideRateSP.fill(getDeviceName(), "GUIDE_RATE", "Guide Rate", SETTINGS_TAB, IP_RW, ISR_1OFMANY, 60, IPS_IDLE);  setGuideRate(guideRate); // :-) ADDED TO ASSURE CORRECT GUIDE RATE (aperez@disca.upv.es)
+    GuideRateSP.fill(getDeviceName(), "GUIDE_RATE", "Guide Rate", SETTINGS_TAB, IP_RW, ISR_1OFMANY, 60, IPS_IDLE);
 
     //Go Home
     HomeSP[0].fill("Home", "Go", ISS_OFF);
@@ -221,6 +221,12 @@ bool LX200NYX101::updateProperties()
             MountTypeSP.apply();
         }
 
+	setGuideRate(1); // Force guide rate to 0.5 for the first time. It seems there is
+	                 // an error in firmware and return 0# instead of 0.5# if this is 
+	                 // not done. In this case PHD2 seems to do not work correctly
+	                 // (aperez@disca.upv.es)
+	                 // JUST TESTING THIS!
+	
         if(sendCommand(":GX90#", status))
         {
             std::string c = status;
