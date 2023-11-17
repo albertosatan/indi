@@ -860,20 +860,10 @@ bool LX200NYX101::SetSlewRate(int index)
 
 bool LX200NYX101::SetCurrentPark() //  :-) (aperez@disca.upv.es)
 {
-  /*
-    char response[RB_MAX_LEN];
-    // 0 = failure, 1 = success
-    int error_or_fail = getCommandSingleCharResponse(PortFD, response, ":hQ#");
-    if(error_or_fail != 1 || response[0] != '1')
-    {
-        LOGF_WARN("===CMD==> Set Park Pos %s", response);
-        return false;
-    }
-    SetAxis1Park(currentRA);
-    SetAxis2Park(currentDEC);
-    LOG_WARN("Park Value set to current position");
-  */
-    return true;
+    char command[DRIVER_LEN] = {0};
+    snprintf(command, DRIVER_LEN, ":hQ#");
+    LOG_WARN("Park Value set to current position :-)");
+    return sendCommand(command);
 }
 
 bool LX200NYX101::setGuideRate(int rate)
